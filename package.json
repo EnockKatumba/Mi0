@@ -1,0 +1,5 @@
+"dependencies": {
+  "@ionic/angular": "...",
+  "@capacitor/core": "...",
+  "@capacitor/cli": "..."
+}

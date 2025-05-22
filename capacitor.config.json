@@ -1,0 +1,6 @@
+{
+  "appId": "com.yourdomain.mi0",
+  "appName": "Mi0",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi0 Night Mode</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+  <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css"/>
+  <style>
+    :root {
+      --ion-background-color: #0b1e1a;
+      --ion-color-primary: #065f46;
+      --ion-color-secondary: #22c55e;
+      --ion-text-color: #d2f5dc;
+      --ion-font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: var(--ion-background-color);
+      color: var(--ion-text-color);
+    }
+
+    .section {
+      background-color: #102d27;
+      margin: 1rem;
+      padding: 1.2rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    .greeting {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #22c55e;
+    }
+
+    .ai-hint {
+      font-size: 0.9rem;
+      color: #86b89b;
+      font-style: italic;
+      margin-top: -0.4rem;
+    }
+
+    ion-button {
+      margin-top: 0.4rem;
+    }
+
+    ion-label, ion-input, ion-textarea {
+      color: var(--ion-text-color);
+    }
+
+    .secret-text {
+      font-size: 0.8rem;
+      color: #94a19b;
+    }
+
+    ion-progress-bar {
+      --background: #1b3d36;
+      --progress-background: #22c55e;
+    }
+  </style>
+  <style>
+  .snippet-container {
+    background-color: #042f2e;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: #22c55e;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .new-snippet input,
+  .new-snippet textarea {
+    background: #09332f;
+    border: none;
+    padding: 0.8rem;
+    color: #d1fae5;
+    border-radius: 0.5rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .new-snippet button {
+    background-color: #065f46;
+    color: white;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 0.5rem;
+  }
+
+  .snippet-list {
+    margin-top: 1.5rem;
+  }
+
+  .snippet-card {
+    background-color: #064e3b;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .snippet-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #34d399;
+  }
+
+  .snippet-card p {
+    margin-top: 0.5rem;
+    color: #a7f3d0;
+    white-space: pre-wrap;
+    font-family: monospace;
+    background: #022c22;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+  }
+
+  .snippet-card:hover {
+    background-color: #065f46;
+  }
+</style>
+</head>
+<body>
+
+<ion-app>
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Mi0 Assistant</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content fullscreen>
+
+    <div class="section">
+      <!-- Mood Section with Dynamic Greeting -->
+  <div class="greeting" id="greetingMood">Hello</div>
+  <div class="ai-hint">How are you really feeling, Enock?</div>
+
+  <ion-label>Today's Mood</ion-label>
+  <ion-input id="moodInput" placeholder="E.g. Focused, Calm..." clear-input></ion-input>
+  <ion-button expand="block" color="secondary" onclick="saveMood()">Save Mood</ion-button>
+  <p id="lastMood" style="margin-top: 5px; font-size: 0.9rem; color: #86b89b;"></p>
+
+
+<script>
+  // Mood & Greeting Setup
+  window.addEventListener('load', () => {
+    // Greeting logic
+    const greetingMood = document.getElementById("greetingMood");
+    const hour = new Date().getHours();
+    let greeting = "Hello";
+    if (hour < 12) greeting = "Good Morning, Enock";
+    else if (hour < 17) greeting = "Good Afternoon, Enock";
+    else greeting = "Good Evening, Enock";
+    greetingMood.textContent = greeting;
+
+    // Last mood
+    const mood = localStorage.getItem('mi0_mood');
+    if (mood) {
+      document.getElementById('lastMood').textContent = `Last mood: ${mood}`;
+    }
+  });
+
+  function saveMood() {
+    const mood = document.getElementById('moodInput').value;
+    if (mood) {
+      localStorage.setItem('mi0_mood', mood);
+      document.getElementById('lastMood').textContent = `Last mood: ${mood}`;
+      document.getElementById('moodInput').value = '';
+      alert("Mood saved, Enock.");
+    } else {
+      alert("Please enter a mood.");
+    }
+  }
+</script>
+    </div>
+
+    <!-- Focus Section -->
+<!-- Focus Section -->
+<div class="section">
+  <h2 style="color:#22c55e;">Focus Mode</h2>
+
+  <ion-textarea id="focusNote" placeholder="What are you focusing on?" rows="3"></ion-textarea>
+
+  <ion-label>How long?</ion-label>
+  <ion-select id="focusTime" placeholder="Select time">
+    <ion-select-option value="15">15 minutes</ion-select-option>
+    <ion-select-option value="25">25 minutes</ion-select-option>
+    <ion-select-option value="45">45 minutes</ion-select-option>
+    <ion-select-option value="custom">Custom</ion-select-option>
+  </ion-select>
+
+  <ion-input id="customTime" placeholder="Enter custom time in minutes" type="number" style="display:none;"></ion-input>
+
+  <ion-button expand="block" color="primary" onclick="startSmartFocus()">Start Focus</ion-button>
+  <p id="timerDisplay" style="color: #86b89b; margin-top: 0.5rem;"></p>
+
+  <ion-progress-bar id="focusProgress" value="0" style="margin-top: 1rem;"></ion-progress-bar>
+  <p id="focusLabel" style="font-size: 0.9rem;">Focus is power, Enock.</p>
+</div>
+
+<script>
+  // Show custom input if "custom" is selected
+  document.getElementById('focusTime').addEventListener('ionChange', (e) => {
+    const val = e.detail.value;
+    const custom = document.getElementById('customTime');
+    custom.style.display = val === 'custom' ? 'block' : 'none';
+  });
+
+  let focusTimer;
+
+  function startSmartFocus() {
+    const note = document.getElementById('focusNote').value.trim();
+    const selectedTime = document.getElementById('focusTime').value;
+    const customInput = document.getElementById('customTime').value;
+    const display = document.getElementById("timerDisplay");
+
+    if (!note) {
+      alert("Please enter a focus goal.");
+      return;
+    }
+
+    let minutes = 0;
+
+    if (selectedTime === 'custom') {
+      if (!customInput || isNaN(customInput)) {
+        alert("Enter a valid custom time.");
+        return;
+      }
+      minutes = parseInt(customInput);
+    } else {
+      minutes = parseInt(selectedTime);
+    }
+
+    if (!minutes || minutes <= 0) {
+      alert("Time must be more than zero.");
+      return;
+    }
+
+    localStorage.setItem('mi0_focus_note', note);
+    localStorage.setItem('mi0_focus_time', minutes);
+
+    // Start timer
+    let totalSeconds = minutes * 60;
+    clearInterval(focusTimer); // clear any previous
+
+    focusTimer = setInterval(() => {
+      if (totalSeconds <= 0) {
+        clearInterval(focusTimer);
+        display.textContent = "Well done! Focus session complete.";
+        document.getElementById('focusProgress').value = 1;
+        alert("Timer ended. You did it!");
+        return;
+      }
+
+      totalSeconds--;
+      const min = Math.floor(totalSeconds / 60);
+      const sec = totalSeconds % 60;
+      display.textContent = `Time Left: ${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+
+      const progress = 1 - (totalSeconds / (minutes * 60));
+      document.getElementById('focusProgress').value = progress;
+    }, 1000);
+  }
+
+  // Auto-fill on reload
+  window.addEventListener('load', () => {
+    const note = localStorage.getItem('mi0_focus_note');
+    if (note) document.getElementById('focusNote').value = note;
+  });
+</script>
+    <!-- Secret Note Section -->
+<div class="section" id="secretNoteSection">
+  <h2 style="color:#22c55e;">Secret Note</h2>
+  <ion-input id="pinInput" type="password" placeholder="Enter PIN to unlock"></ion-input>
+  <ion-button expand="block" color="medium" onclick="unlockNote()">Unlock</ion-button>
+
+  <div id="noteArea" style="display:none;">
+    <ion-textarea id="secretNote" placeholder="Hidden thoughts…" rows="4"></ion-textarea>
+    <ion-button expand="block" color="secondary" onclick="lockNote()">Lock & Save Note</ion-button>
+    <p class="secret-text">Encrypted and private.</p>
+  </div>
+</div>
+
+<script>
+  // On page load, check if note exists
+  window.addEventListener('load', () => {
+    const storedNote = localStorage.getItem('mi0_note');
+    const storedPin = localStorage.getItem('mi0_pin');
+
+    if (!storedNote || !storedPin) {
+      document.getElementById('noteArea').style.display = 'block'; // first-time setup
+      document.getElementById('pinInput').placeholder = 'Set a PIN to lock note';
+    }
+  });
+
+  function lockNote() {
+    const pin = document.getElementById('pinInput').value;
+    const note = document.getElementById('secretNote').value;
+
+    if (!pin || !note) {
+      alert("Both PIN and note are required.");
+      return;
+    }
+
+    // Encode and store
+    localStorage.setItem('mi0_pin', btoa(pin));
+    localStorage.setItem('mi0_note', btoa(note));
+
+    alert("Note locked and saved!");
+    document.getElementById('noteArea').style.display = 'none';
+    document.getElementById('pinInput').value = '';
+  }
+
+  function unlockNote() {
+    const enteredPin = document.getElementById('pinInput').value;
+    const storedPin = atob(localStorage.getItem('mi0_pin') || '');
+    const storedNote = localStorage.getItem('mi0_note');
+
+    if (enteredPin === storedPin) {
+      const note = atob(storedNote);
+      document.getElementById('noteArea').style.display = 'block';
+      document.getElementById('secretNote').value = note;
+    } else {
+      alert("Incorrect PIN.");
+    }
+  }
+</script>
+
+    <div class="section">
+  <h2 style="color:#22c55e;">Your Tasks</h2>
+
+  <ion-input id="taskInput" placeholder="Add a task..." clear-input></ion-input>
+  <ion-button expand="block" color="secondary" onclick="addTask()">Add Task</ion-button>
+
+  <ion-list id="taskList"></ion-list>
+  <p id="taskStats" style="font-size: 0.85rem; color: #86b89b; margin-top: 0.5rem;"></p>
+</div>
+<script>
+  let tasks = JSON.parse(localStorage.getItem('mi0_tasks')) || [];
+
+  function updateTasksUI() {
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    let completed = 0;
+
+    tasks.forEach((task, i) => {
+      const item = document.createElement('ion-item');
+      item.style.transition = '0.3s';
+
+      const label = document.createElement('ion-label');
+      label.innerText = task.text;
+      if (task.done) {
+        label.style.textDecoration = "line-through";
+        label.style.color = "#8f8";
+        completed++;
+      }
+
+      const toggle = document.createElement('ion-checkbox');
+      toggle.checked = task.done;
+      toggle.slot = "start";
+      toggle.addEventListener('ionChange', () => {
+        tasks[i].done = !tasks[i].done;
+        saveTasks();
+        updateTasksUI();
+      });
+
+      const delBtn = document.createElement('ion-button');
+      delBtn.innerHTML = "Delete";
+      delBtn.fill = "clear";
+      delBtn.slot = "end";
+      delBtn.color = "danger";
+      delBtn.addEventListener('click', () => {
+        tasks.splice(i, 1);
+        saveTasks();
+        updateTasksUI();
+      });
+
+      item.appendChild(toggle);
+      item.appendChild(label);
+      item.appendChild(delBtn);
+      taskList.appendChild(item);
+    });
+
+    const stats = `Tasks: ${tasks.length} | Completed: ${completed}`;
+    document.getElementById('taskStats').textContent = stats;
+
+    // Smart AI encouragement
+    if (completed > 0 && completed === tasks.length) {
+      setTimeout(() => alert("Enock! All tasks done. You crushed it!"), 500);
+    }
+  }
+
+  function addTask() {
+    const input = document.getElementById('taskInput');
+    const value = input.value.trim();
+    if (value) {
+      tasks.push({ text: value, done: false });
+      input.value = '';
+      saveTasks();
+      updateTasksUI();
+    }
+  }
+
+  function saveTasks() {
+    localStorage.setItem('mi0_tasks', JSON.stringify(tasks));
+  }
+
+  // Load tasks on start
+  window.addEventListener('load', updateTasksUI);
+</script>
+<div class="snippet-container">
+  <h2 class="section-title">My Code Vault</h2>
+
+  <!-- New Snippet Form -->
+  <div class="new-snippet">
+    <input type="text" [(ngModel)]="newSnippetTitle" placeholder="Snippet Title" />
+    <textarea [(ngModel)]="newSnippet" placeholder="Enter your code..."></textarea>
+    <button (click)="saveSnippet()">Save Snippet</button>
+  </div>
+
+  <!-- Snippet Titles List -->
+  <div class="snippet-list">
+    <div *ngFor="let snippet of snippets" class="snippet-card" (click)="selectSnippet(snippet)">
+      <h3>{{ snippet.title }}</h3>
+      <p *ngIf="selectedSnippet?.id === snippet.id">{{ snippet.content }}</p>
+    </div>
+  </div>
+</div>
+
+</ion-app>
+
+</body>
+</html>
